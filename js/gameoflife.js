@@ -1,11 +1,9 @@
-const { thisExpression } = require("jscodeshift");
-
 function seed() {
   return Array.from(arguments);
 }
 
-function same([x, y], [j, k]) {
-  return x === j && y === k;
+function same([a, b], [c, d]) {
+  return a === c && b === d;
 }
 
 // The game state to search for `cell` is passed as the `this` value of the function.
@@ -31,18 +29,18 @@ const corners = (state = []) => {
   if(state.length === 0){
     return {topRight:[0,0], bottomLeft: [0,0]};
   }
-  let a = 1;
-  let b = 99999;
-  let a2 = 1;
-  let b2 = 99999;
+  let i = 1;
+  let k = 99999;
+  let j = 1;
+  let l = 99999;
 
-  for(let i = 0; i < state.length; i++){
-    a = Math.max(state[i][0],a);
-    b = Math.min(state[i][0],b);
-    a2 = Math.max(state[i][1],a2);
-    b2 = Math.min(state[i][1],b2);
+  for(let n = 0; n < state.length; n++){
+    i = Math.max(state[n][0],i);
+    k = Math.min(state[n][0],k);
+    j = Math.max(state[n][1],j);
+    l = Math.min(state[n][1],l);
   }
-  return {topRight:[a,a2], bottomLeft: [b,b2]};
+  return {topRight:[i,j], bottomLeft: [k,l]};
 };
 
 const printCells = (state) => {
@@ -57,23 +55,23 @@ const printCells = (state) => {
   return string;
 };
 
-const getNeighborsOf = ([x, y]) => {
-  return [[x-1,y-1],[x, y-1], [x+1, y-1],[x-1,y],[x+1,y],[x-1,y+1],[x,y+1],[x+1,y+1]];
+const getNeighborsOf = ([a, b]) => {
+  return [[a-1,b-1],[a, b-1], [a+1, b-1],[a-1,b],[a+1,b],[a-1,b+1],[a,b+1],[a+1,b+1]];
 };
 
 const getLivingNeighbors = (cell, state) => {
-  let l = [];
-  getNeighborsOf(cell).forEach(x => {
-    if(contains.call(state,x)){
-      l.push(x)
+  let o = [];
+  getNeighborsOf(cell).forEach(a => {
+    if(contains.call(state,a)){
+      o.push(a)
     }
   });
-  return l;
+  return o;
 };
 
 const willBeAlive = (cell, state) => {
-  let no_neigh = getLivingNeighbors(cell, state).length;
-  return (no_neigh === 3) || (no_neigh === 2 & contains.call(state,cell));
+  let noNeighbor = getLivingNeighbors(cell, state).length;
+  return (noNeighbor === 3) || (noNeighbor === 2 & contains.call(state,cell));
 };
 
 const calculateNext = (state) => {
@@ -91,14 +89,14 @@ const calculateNext = (state) => {
 };
 
 const iterate = (state, iterations) => {
-  let num_states = [];
-  num_states.push(state);
+  let numStates = [];
+  numStates.push(state);
   while(iterations > 0){
-    num_states.push(calculateNext(state));
+    numStates.push(calculateNext(state));
     state = calculateNext(state);
     iterations--;
   }
-  return num_states;
+  return numStates;
 };
 
 const main = (pattern, iterations) => {
